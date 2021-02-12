@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import json
 import os
+from urllib.request import urlopen
 
 # 喜马拉雅 - 《阿亮的烦恼生活》
 url = 'https://www.ximalaya.com/guangbojv/16804202/'
@@ -13,7 +14,7 @@ headers={
 dataList = []
 totalPage = 79
 fileName = 'dataList.json'
-originalAudioFolder = 'm4a'
+originalAudioFolder = 'audio'
 
 # 第一步，爬取音轨ID及标题
 if os.access(fileName, os.F_OK):
@@ -50,12 +51,12 @@ for data in dataList:
     response = requests.get(trackDataUrl % (data['trackId']), headers = headers)
     jsonTrackData = response.json()
     trackSrc = jsonTrackData['data']['src']
-    ext = trackSrc.split('.')[-1]
+    # ext = trackSrc.split('.')[-1] # 原为m4a格式
+    # 此处直接存为mp3
+    ext = 'mp3'
     fileName = data['title'] + '.' + ext
-    res = requests.get(trackSrc, stream = True)
-    filePath = os.path.join(originalAudioFolder, fileName)
-    print('开始写入文件：', filePath)
-    with open(filePath, 'wb') as fd:
-        for chunk in res.iter_content():
-            fd.write(chunk)
-    print(fileName + ' 成功下载！')
+    response = urlopen(trackSrc)
+    file = response.read()
+    with open(originalAudioFolder + '/' + fileName, 'wb') as f:
+        print('save -> %s ' % fileName)
+        f.write(file)
