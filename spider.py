@@ -47,14 +47,15 @@ if len(dataList) == 0:
 folder = os.path.exists(originalAudioFolder)
 if not folder:
     os.makedirs(originalAudioFolder)
-for data in dataList:
+for i in range(len(dataList)):
+    data = dataList[i]
     response = requests.get(trackDataUrl % (data['trackId']), headers = headers)
     jsonTrackData = response.json()
     trackSrc = jsonTrackData['data']['src']
     # ext = trackSrc.split('.')[-1] # 原为m4a格式
     # 此处直接存为mp3
     ext = 'mp3'
-    fileName = data['title'] + '.' + ext
+    fileName = str(i + 1) + '.' + data['title'] + '.' + ext
     response = urlopen(trackSrc)
     file = response.read()
     with open(originalAudioFolder + '/' + fileName, 'wb') as f:
