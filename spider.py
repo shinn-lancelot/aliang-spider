@@ -52,9 +52,9 @@ for i in range(len(dataList)):
     response = requests.get(trackDataUrl % (data['trackId']), headers = headers)
     jsonTrackData = response.json()
     trackSrc = jsonTrackData['data']['src']
-    # ext = trackSrc.split('.')[-1] # 原为m4a格式
+    ext = trackSrc.split('.')[-1] # 原为m4a格式
     # 此处直接存为mp3
-    ext = 'mp3'
+    # ext = 'mp3'
     fileName = str(i + 1) + '.' + data['title'] + '.' + ext
     response = urlopen(trackSrc)
     file = response.read()
